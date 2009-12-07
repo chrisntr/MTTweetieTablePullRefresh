@@ -125,10 +125,7 @@ namespace TableViewPullRefresh
 		
 			UIView.BeginAnimations("flipImage");
 			UIView.SetAnimationDuration (animated ? .18f : 0.0f);
-			Console.WriteLine ("Before Transform " + arrowImage.Layer.Transform);
 			arrowImage.Layer.Transform = isFlipped ? CATransform3D.MakeRotation(3.141592653589793238462643f, 0.0f, 0.0f, 1.0f) : CATransform3D.MakeRotation(3.141592653589793238462643f * 2, 0.0f, 0.0f, 1.0f);
-			
-			Console.WriteLine ("After Transform " + arrowImage.Layer.Transform);
 			UIView.CommitAnimations();
 			isFlipped = !isFlipped;
 			

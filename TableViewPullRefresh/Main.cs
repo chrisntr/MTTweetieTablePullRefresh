@@ -106,15 +106,11 @@ namespace TableViewPullRefresh
             this.View.AddSubview(tableView);
 			
 			tableView.DraggingStarted += delegate { 
-				
-				Console.WriteLine ("Dragging started");
 				checkForRefresh = true; 	 
 			};
 			
 			tableView.Scrolled += delegate(object sender, EventArgs e) {
 				
-				
-				Console.WriteLine ("Scrolled");
 				if (checkForRefresh) {
 					if (refreshHeaderView.isFlipped && (tableView.ContentOffset.Y > - 65.0f) && (tableView.ContentOffset.Y < 0.0f) && !reloading)
 					{
@@ -130,8 +126,7 @@ namespace TableViewPullRefresh
 			};
 			
 			tableView.DraggingEnded += delegate(object sender, EventArgs e) {
-				
-				Console.WriteLine ("Dragging ended");
+
 				if (this.tableView.ContentOffset.Y <= -65.0f){
 					reloading = true;
 					//Reload your data here
