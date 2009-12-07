@@ -105,29 +105,34 @@ namespace TableViewPullRefresh
             // Add the table view as a subview
             this.View.AddSubview(tableView);
 			
-			tableView.DraggingStarted += delegate {
+			tableView.DraggingStarted += delegate { 
+				
+				Console.WriteLine ("Dragging started");
 				checkForRefresh = true; 	 
 			};
 			
 			tableView.Scrolled += delegate(object sender, EventArgs e) {
 				
+				
+				Console.WriteLine ("Scrolled");
 				if (checkForRefresh) {
-					if ((refreshHeaderView.isFlipped) && (this.tableView.ContentOffset.Y > - 35.0f) && (this.tableView.ContentOffset.Y < 0.0f) && (!reloading))
+					if (refreshHeaderView.isFlipped && (tableView.ContentOffset.Y > - 65.0f) && (tableView.ContentOffset.Y < 0.0f) && !reloading)
 					{
 						refreshHeaderView.flipImageAnimated (true);
 						refreshHeaderView.setStatus (TableViewPullRefresh.RefreshTableHeaderView.RefreshStatus.PullToReloadStatus);
 					}
-				}
-				else if ((!refreshHeaderView.isFlipped) && (this.tableView.ContentOffset.Y < -35.0f))
-				{	
-					refreshHeaderView.flipImageAnimated (true);
-					refreshHeaderView.setStatus(TableViewPullRefresh.RefreshTableHeaderView.RefreshStatus.ReleaseToReloadStatus );
+					else if ((!refreshHeaderView.isFlipped) && (this.tableView.ContentOffset.Y < -65.0f))
+					{	
+						refreshHeaderView.flipImageAnimated (true);
+						refreshHeaderView.setStatus(TableViewPullRefresh.RefreshTableHeaderView.RefreshStatus.ReleaseToReloadStatus );
+					}
 				}
 			};
 			
 			tableView.DraggingEnded += delegate(object sender, EventArgs e) {
-				 
-				if (this.tableView.ContentOffset.Y <= -35.0f){
+				
+				Console.WriteLine ("Dragging ended");
+				if (this.tableView.ContentOffset.Y <= -65.0f){
 					reloading = true;
 					//Reload your data here
 					refreshHeaderView.toggleActivityView();

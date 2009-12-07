@@ -39,39 +39,39 @@ namespace TableViewPullRefresh
 			lastUpdatedLabel.BackgroundColor = UIColor.Clear; 
 			lastUpdatedLabel.TextAlignment = UITextAlignment.Center; 
 			
-			setCurrentDate();
+			if (NSUserDefaults.StandardUserDefaults["EGORefreshTableView_LastRefresh"] != null)
+			{
+				lastUpdatedLabel.Text = NSUserDefaults.StandardUserDefaults["EGORefreshTableView_LastRefresh"].ToString();
+			}
+			else
+			{
+				setCurrentDate();
+			}
 			
 			this.AddSubview (lastUpdatedLabel);
 			
 			statusLabel = new UILabel (new RectangleF (0.0f, this.Frame.Height - 48.0f, 320.0f, 20.0f));
-			statusLabel.Font = UIFont.BoldSystemFontOfSize(14.0f); 
+			statusLabel.Font = UIFont.BoldSystemFontOfSize(13.0f); 
 			statusLabel.TextColor = UIColor.Black; //new UIColor (87.0f,108.0f,137.0f,1.0f);
 			statusLabel.ShadowColor = UIColor.FromWhiteAlpha(0.9f,1.0f);
 			statusLabel.ShadowOffset = new SizeF (0.0f,1.0f);
 			statusLabel.BackgroundColor = UIColor.Clear; 
 			statusLabel.TextAlignment = UITextAlignment.Center; 
-			
 			setStatus(RefreshTableHeaderView.RefreshStatus.PullToReloadStatus);
-			
 			this.AddSubview(statusLabel); 
 	
 			arrowImage = new UIImageView(new RectangleF (25.0f, this.Frame.Height - 65.0f, 30.0f, 55.0f));
 			arrowImage.Image = UIImage.FromFile ("blueArrow.png");
 			arrowImage.ContentMode = UIViewContentMode.ScaleAspectFit;
 			arrowImage.Layer.Transform = CATransform3D.MakeRotation(3.141592653589793238462643f, 0.0f,0.0f,1.0f);
-			
-			
-			
 			this.AddSubview(arrowImage);
-			activityView = new UIActivityIndicatorView();
+			
+			activityView = new UIActivityIndicatorView(UIActivityIndicatorViewStyle.Gray);
 			activityView.Frame = new RectangleF (25.0f, this.Frame.Height - 38.0f, 20.0f, 20.0f);
-			activityView.ActivityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray;
 			activityView.HidesWhenStopped = true;
 			
 			this.AddSubview(activityView);
-		
-			
-			
+
 			this.isFlipped = false;
 			
 			
@@ -115,15 +115,20 @@ namespace TableViewPullRefresh
 		
 		public void setCurrentDate()
 		{
-			lastUpdatedLabel.Text = DateTime.Now.ToString("G");
+			lastUpdatedLabel.Text = String.Format("Last Updated: {0}", DateTime.Now.ToString("G"));
+			NSUserDefaults.StandardUserDefaults["EGORefreshTableView_LastRefresh"] = new NSString(DateTime.Now.ToString("G"));
+			NSUserDefaults.StandardUserDefaults.Synchronize();
 		}
 		
 		public void flipImageAnimated(bool animated)
 		{
 		
 			UIView.BeginAnimations("flipImage");
-			UIView.SetAnimationDuration (animated ? .18f : 0.0);
+			UIView.SetAnimationDuration (animated ? .18f : 0.0f);
+			Console.WriteLine ("Before Transform " + arrowImage.Layer.Transform);
 			arrowImage.Layer.Transform = isFlipped ? CATransform3D.MakeRotation(3.141592653589793238462643f, 0.0f, 0.0f, 1.0f) : CATransform3D.MakeRotation(3.141592653589793238462643f * 2, 0.0f, 0.0f, 1.0f);
+			
+			Console.WriteLine ("After Transform " + arrowImage.Layer.Transform);
 			UIView.CommitAnimations();
 			isFlipped = !isFlipped;
 			
